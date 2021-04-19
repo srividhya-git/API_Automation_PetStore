@@ -3,7 +3,17 @@
 <suite guice-stage="DEVELOPMENT" name="Failed suite [Default suite]">
   <test verbose="2" name="Default test">
     <classes>
-      <class name="com.qa.test.TC001_AddPets_POST"/>
+      <class name="com.qa.test.TC004_UploadPetImage_POST"/>
     </classes>
   </test> <!-- Default test -->
+  <test name="Default test(failed)">
+    <classes>
+      <class name="com.qa.test.TC004_UploadPetImage_POST">
+        <methods>
+          <include name="setUp"/>
+          <include name="uploadPetImage" invocation-numbers="1"/>
+        </methods>
+      </class> <!-- com.qa.test.TC004_UploadPetImage_POST -->
+    </classes>
+  </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

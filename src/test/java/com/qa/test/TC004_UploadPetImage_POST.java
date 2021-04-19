@@ -2,14 +2,15 @@ package com.qa.test;
 
 import static io.restassured.RestAssured.baseURI;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.hasItem;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
-import org.apache.poi.ss.formula.ptg.LessThanPtg;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
 import com.qa.base.TestBase;
 import com.qa.generic.AutomationConstatnt;
 import com.qa.generic.XLUtils;
@@ -20,68 +21,54 @@ import io.restassured.http.Method;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
-import io.restassured.matcher.RestAssuredMatchers.*;
-import org.hamcrest.Matchers;
 
-
-public class TC001_AddPets_POST extends TestBase{
-  
+public class TC004_UploadPetImage_POST extends TestBase{
+ 
 	TestBase testBase;
 	String serviceURL;
 	String apiURL;
 	String requestJSON;
+	String apiURL_without_qryParam;
 	
 	@BeforeMethod
 	public void setUp(){
 		testBase=new TestBase();
 		serviceURL=prop.getProperty("serviceURL");
-		apiURL= prop.getProperty("addPet_apiURL");
+		apiURL_without_qryParam=prop.getProperty("uploadPetImage_apiURL");
 	}
 	
-	
-	//dataProvider= "PetDataProvider"
-	//String Id, String name, String status
-	
-	@Test(dataProvider= "PetDataProvider")
-	public void addPet(String Id, String name, String status){
+	@Test(dataProvider="PetDataProvider")
+	public void uploadPetImage(String petId, String imageTitle){
 		baseURI = serviceURL;
+		apiURL="/" + petId + apiURL_without_qryParam;
 		
-		requestJSON= "{\"id\":"+Id+",\"category\":{\"id\":0,\"name\":\"string\"},"
-				+ "\"name\":\""+name+"\",\"photoUrls\":[\"string\"],\"tags\":[{\"id\":0,\"name\":\"string\"}],"
-				+ "\"status\":\""+status+"\"}";
+		File file= new File(AutomationConstatnt.FileUploadFolderPath+ imageTitle + ".png");
 		
+
 		RequestSpecification httpRequest = given();
-		httpRequest.header("Content-Type", "application/json");
-		httpRequest.contentType(ContentType.JSON);
-		httpRequest.accept(ContentType.JSON);
-		httpRequest.body(requestJSON);
+		httpRequest.multiPart("file", file, "multipart/form-data");
 		
 		Response response= httpRequest.request(Method.POST, apiURL);
 		ValidatableResponse valResponse= response.then();
 		
 		valResponse.statusCode(200);
-		valResponse.time(Matchers.lessThan(20L), TimeUnit.SECONDS);
 		
-		System.out.println("Response Body -->" +response.getBody().asPrettyString());
 	}
   
 	@DataProvider(name= "PetDataProvider")
 	String [][] getPetData() throws IOException{
 		
-		int rownum= XLUtils.getRowCount(AutomationConstatnt.DataFilePath, "AddPet");
-		int colnum= XLUtils.getCellCount(AutomationConstatnt.DataFilePath, "AddPet", 1);
+		int rownum= XLUtils.getRowCount(AutomationConstatnt.DataFilePath, "ImageUpload");
+		int colnum= XLUtils.getCellCount(AutomationConstatnt.DataFilePath, "ImageUpload", 1);
 		System.out.println("rn -->"+rownum);
 		System.out.println(("clnum-->"+colnum));
 		String petData[][]= new String[rownum][colnum];
 		
 		for(int i=1; i < rownum; i++){
 			for (int j=0; j<colnum; j++){
-				petData[i-1][j]=XLUtils.getCellData(AutomationConstatnt.DataFilePath, "AddPet", i, j);
+				petData[i-1][j]=XLUtils.getCellData(AutomationConstatnt.DataFilePath, "ImageUpload", i, j);
 			}
 		}
-		
-		
-		//String petData[][]= {{"100105", "Lab", "available"}, {"100107", "Nan", "pending"}, {"100106", "Alc", "sold"}};
 		
 		return petData;
 	}

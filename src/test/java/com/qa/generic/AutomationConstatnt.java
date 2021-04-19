@@ -5,4 +5,6 @@ public interface AutomationConstatnt {
 	String projectPath = System.getProperty("user.dir");
 
 	public static  final String DataFilePath=projectPath+"/src/test/resources/TestData/Data.xlsx";
+	
+	public static final String FileUploadFolderPath= projectPath+"/src/test/resources/FileUpload/";
 }

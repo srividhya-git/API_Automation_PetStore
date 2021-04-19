@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="Suite" parallel="none">
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Suite" parallel="false">
   <test name="Test">
     <classes>
-      <class name="com.qa.test.Pet_POST"/>
+      <class name="com.qa.test.TC001_AddPets_POST"/>
+      <class name="com.qa.test.TC002_FindPet_Status_GET"/>
+      <class name="com.qa.test.TC003_UpdatePet_NameStatus_PUT"/>
+      <class name="com.qa.test.TC004_UploadPetImage_POST"/>
     </classes>
   </test> <!-- Test -->
 </suite> <!-- Suite -->
